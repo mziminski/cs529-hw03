@@ -1,16 +1,14 @@
 html {
-
+    background-color: #ffffff;
 }
 
 body {
     margin: auto;
     height:auto;
-    width: 100%;
     background-color: #FFFFFF;
 }
 
-h1, h2, h3, h4, h5, h6, a {
-    display: inline;
+h1, h2, h3, h4, h5, h6 {
     /* top | right | bottom | left */
     padding-left: 10px; 
     font-family: "Arial", sans-serif;
@@ -18,12 +16,21 @@ h1, h2, h3, h4, h5, h6, a {
 }
 
 p {
-    display: inline;
-    vertical-align: bottom;
-    /* top | right | bottom | left */
-    padding-left: 100px; 
+    padding-left: 10px;
+    padding-right: 10px;
     font-family: "Arial", sans-serif;
-    font-style: bold;
+    font-size: medium;
+}
+
+.nav {
+    display: inline;
+}
+
+a {
+    width:auto;
+    height:auto;
+    text-decoration: none;
+    padding-left: 10px;
 }
 
 canvas {
