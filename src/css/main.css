@@ -27,7 +27,7 @@ canvas {
     width:100%;
 }
 
-#flow-scene {
+.flow-scene {
     /* background-color: green; */
     float:left;
     width:50%;
@@ -35,7 +35,7 @@ canvas {
     box-sizing: border-box
 }
 
-#flow-slice {
+.flow-slice {
     /* background-color: blue; */
     float: right;
     width:50%;

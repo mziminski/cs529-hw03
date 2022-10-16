@@ -18,7 +18,7 @@ scene2.add(light2);
 
 // Sizes
 const sizes = {
-    width: window.innerWidth * 0.5,
+    width: window.innerWidth * 0.49,
     height: window.innerHeight * 0.85
 };
 
@@ -46,7 +46,7 @@ camera.lookAt(0,0,0);
 scene.add(camera);
 
 const camera2 = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000 );
-camera2.position.set(0,2,20);
+camera2.position.set(0,0,9);
 camera2.lookAt(0,0,0);
 scene2.add(camera2);
 
@@ -57,7 +57,7 @@ const renderer = new THREE.WebGLRenderer({
 });
 
 const renderer2 = new THREE.WebGLRenderer({
-    canvas2: canvas2
+    canvas: canvas2
 });
 
 renderer.setSize(sizes.width, sizes.height);

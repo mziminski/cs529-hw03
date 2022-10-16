@@ -75,15 +75,56 @@ const createSlice = () => {
     scene.add( plane );
 }
 
-const drawSlicePlot = (data) => {
-    
+const drawSlicePlot = (data, Z) => {
+
     const height = (bounds.maxY - bounds.minY) + 2;
     const width = (bounds.maxX - bounds.minX) + 2;
     
-    const geometry = new THREE.PlaneGeometry(width , height);
-    const material = new THREE.MeshBasicMaterial( {color: 0xe5e5e5, side: THREE.DoubleSide} );
-    const plane = new THREE.Mesh( geometry, material );
+    const geometryp = new THREE.PlaneGeometry(width , height);
+    const materialp = new THREE.MeshBasicMaterial( {color: 0xe5e5e5, side: THREE.DoubleSide} );
+    const plane = new THREE.Mesh( geometryp, materialp );
     scene2.add( plane );
+    
+    const positions = [];
+    const colors = [];
+
+    const color = new THREE.Color();
+
+    const n = data.length;
+
+    data.forEach(function(items) {
+
+        concentration = items.concentration;
+        u = items.U;
+        v = items.V;
+        w = items.W;
+        // positions
+        x = items.X;
+        y = items.Y - 5;
+        z = Z;
+        
+        positions.push( x, y, z );
+
+        // colors
+        const vx = concentration * u;
+        const vy = concentration * v;
+        const vz = concentration * w;
+
+        color.setRGB(vx, vy, vz);
+
+        colors.push(color.r, color.g, color.b);
+    })
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+
+    const material = new THREE.PointsMaterial({size: 0.06, vertexColors: true, transparent: true});
+
+    const points = new THREE.Points(geometry, material);
+
+    scene2.add(points);
 } 
 
 const loadData = (file) => {
@@ -123,7 +164,7 @@ const loadData = (file) => {
         // create the particle system
         createParticleSystem(data);
         createSlice();
-        drawSlicePlot(data);
+        drawSlicePlot(data, 1);
     })
 };
 
