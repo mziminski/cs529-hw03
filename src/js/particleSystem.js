@@ -5,23 +5,6 @@ var data = [],
 // bounds of the data
 const bounds = {};
 
-// create the containment box.
-// This cylinder is only to guide development.
-// TODO: Remove after the data has been rendered
-const createCylinder = () => {
-    // get the radius and height based on the data bounds
-    const radius = (bounds.maxX - bounds.minX) / 2.0 + 1;
-    const height = (bounds.maxY - bounds.minY) + 1;
-
-    // create a cylinder to contain the particle system
-    const geometry = new THREE.CylinderGeometry(radius, radius, height, 32);
-    const material = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
-    const cylinder = new THREE.Mesh(geometry, material);
-
-    // add the containment to the scene
-    scene.add(cylinder);
-};
-
 // creates the particle system
 const createParticleSystem = (data) => {
 
@@ -78,7 +61,14 @@ const createSlice = () => {
     const geometry = new THREE.PlaneGeometry(width , height);
     geometry.translate(0,0,Z);
 
-    const material = new THREE.MeshBasicMaterial( {color: 0x222222, side: THREE.DoubleSide} );
+    var color = 0;
+    if (toggle_invert) { 
+        color = 0x222222;
+    } else {
+        color = 0x555555;
+    }
+
+    const material = new THREE.MeshBasicMaterial( {color: color, side: THREE.DoubleSide} );
     const plane = new THREE.Mesh( geometry, material );
 
     d3.select("body").on("keydown", function (event) {
@@ -121,7 +111,15 @@ const drawSlicePlot = (data, Z) => {
     const width = (bounds.maxX - bounds.minX) + 2;
     
     const geometryp = new THREE.PlaneGeometry(width , height);
-    const materialp = new THREE.MeshBasicMaterial( {color: 0x222222} );
+
+    var color = 0;
+    if (toggle_invert) { 
+        color = 0x222222;
+    } else {
+        color = 0x555555;
+    }
+
+    const materialp = new THREE.MeshBasicMaterial( {color: color} );
     const plane = new THREE.Mesh( geometryp, materialp );
     scene2.add( plane );
     
@@ -129,7 +127,7 @@ const drawSlicePlot = (data, Z) => {
     const positions = [];
     const colors = [];
 
-    const color = new THREE.Color();
+    color = new THREE.Color();
 
     const n = data.length;
 
@@ -202,9 +200,6 @@ const loadData = (file) => {
                 W: Number(d.velocity1)
             })
         });
-        // draw the containment cylinder
-        // TODO: Remove after the data has been rendered
-        // createCylinder();
         // create the particle system
         createParticleSystem(data);
         createSlice();
