@@ -1,4 +1,6 @@
-var data = [];
+var data = [], 
+    Z = -5.1, 
+    toggle_invert = false;
 
 // bounds of the data
 const bounds = {};
@@ -48,8 +50,12 @@ const createParticleSystem = (data) => {
         const vy = concentration * v;
         const vz = concentration * w;
 
-        color.setRGB(vx, vy, vz);
-
+        if (toggle_invert == false || items.Z < Z + 0.1 && items.Z > Z - 0.1) {
+            color.setRGB(vx, vy, vz);
+         } else {
+            color.setRGB(0, 0, 0);
+         }
+        
         colors.push(color.r, color.g, color.b);
     })
 
@@ -58,7 +64,7 @@ const createParticleSystem = (data) => {
     geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
 
-    const material = new THREE.PointsMaterial({size: 0.06, vertexColors: true, transparent: true});
+    const material = new THREE.PointsMaterial({size: 0.03, vertexColors: true, transparent: true});
 
     const points = new THREE.Points(geometry, material);
 
@@ -70,21 +76,56 @@ const createSlice = () => {
     const width = (bounds.maxX - bounds.minX) + 2;
     
     const geometry = new THREE.PlaneGeometry(width , height);
-    const material = new THREE.MeshBasicMaterial( {color: 0xe5e5e5, side: THREE.DoubleSide} );
+    geometry.translate(0,0,Z);
+
+    const material = new THREE.MeshBasicMaterial( {color: 0x222222, side: THREE.DoubleSide} );
     const plane = new THREE.Mesh( geometry, material );
+
+    d3.select("body").on("keydown", function (event) {
+
+        if ( event.key == 'a') {
+            // move split pane (+) z direction
+            Z += 0.5;
+        } else if (event.key == 's') {
+            // move split pane (-) z direction
+            Z += 0.1;
+        } else if (event.key == 'd') {
+            // move split pane (-) z direction
+            Z -= 0.1;
+        } else if (event.key == 'f') {
+            // move split pane (-) z direction
+            Z -= 0.5;
+        }
+        // set limit for moving in (+/-) Z irection 
+        th = 5.1;
+        if (Z < -th) {
+            Z = -th;
+        } else if (Z > th) {
+            Z = th;
+        }
+
+        // clear th scene
+        scene.remove.apply(scene, scene.children);
+        scene.remove.apply(scene2, scene2.children);
+        createParticleSystem(data);
+        createSlice();
+        drawSlicePlot(data, Z);
+    });
+
     scene.add( plane );
 }
 
 const drawSlicePlot = (data, Z) => {
-
+    // background pane
     const height = (bounds.maxY - bounds.minY) + 2;
     const width = (bounds.maxX - bounds.minX) + 2;
     
     const geometryp = new THREE.PlaneGeometry(width , height);
-    const materialp = new THREE.MeshBasicMaterial( {color: 0xe5e5e5, side: THREE.DoubleSide} );
+    const materialp = new THREE.MeshBasicMaterial( {color: 0x222222} );
     const plane = new THREE.Mesh( geometryp, materialp );
     scene2.add( plane );
     
+    // point cloud
     const positions = [];
     const colors = [];
 
@@ -101,9 +142,7 @@ const drawSlicePlot = (data, Z) => {
         // positions
         x = items.X;
         y = items.Y - 5;
-        z = Z;
-        
-        positions.push( x, y, z );
+        z = 1;
 
         // colors
         const vx = concentration * u;
@@ -112,7 +151,13 @@ const drawSlicePlot = (data, Z) => {
 
         color.setRGB(vx, vy, vz);
 
-        colors.push(color.r, color.g, color.b);
+        // push to lists
+        if ( items.Z < Z + 0.1 && items.Z > Z - 0.1) {
+            // console.log("hitting!");
+            positions.push( x, y, z );
+            colors.push(color.r, color.g, color.b);
+        }
+        
     })
 
     const geometry = new THREE.BufferGeometry();
@@ -120,7 +165,7 @@ const drawSlicePlot = (data, Z) => {
     geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
 
-    const material = new THREE.PointsMaterial({size: 0.06, vertexColors: true, transparent: true});
+    const material = new THREE.PointsMaterial({size: 0.03, vertexColors: true, transparent: true});
 
     const points = new THREE.Points(geometry, material);
 
@@ -128,7 +173,6 @@ const drawSlicePlot = (data, Z) => {
 } 
 
 const loadData = (file) => {
-
     // read the csv file
     d3.csv(file).then(function (fileData)
     // iterate over the rows of the csv file
@@ -164,7 +208,7 @@ const loadData = (file) => {
         // create the particle system
         createParticleSystem(data);
         createSlice();
-        drawSlicePlot(data, 1);
+        drawSlicePlot(data, Z);
     })
 };
 

@@ -1,7 +1,7 @@
 
 // Canvas
-const canvas = document.querySelector('canvas.flow-scene');
-const canvas2 = document.querySelector('canvas.flow-slice');
+const canvas = document.querySelector('canvas#flow-scene');
+const canvas2 = document.querySelector('canvas#flow-slice');
 
 // Scene
 const scene = new THREE.Scene();
@@ -41,7 +41,7 @@ window.addEventListener('resize', () =>
 
 // Camera setup
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000 );
-camera.position.set(0,2,20);
+camera.position.set(15,10,10);
 camera.lookAt(0,0,0);
 scene.add(camera);
 
@@ -63,24 +63,53 @@ const renderer2 = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height);
 renderer2.setSize(sizes.width, sizes.height);
 // sets up the background color
-renderer.setClearColor(0xA9A9A9);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+color = 0xA9A9A9;
 
-renderer2.setClearColor(0xA9A9A9);
-renderer2.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+const invertColor = () => {
+    toggle_invert = !toggle_invert;
+
+    if (toggle_invert) {
+        color = 0xA9A9A9;
+    } else {
+        color = 0x000000
+    }
+
+    renderer.setClearColor(color);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    renderer2.setClearColor(color);
+    renderer2.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    scene.remove.apply(scene, scene.children);
+    scene.remove.apply(scene2, scene2.children);
+    createParticleSystem(data);
+    createSlice();
+    drawSlicePlot(data, Z);
+}
+
+const reset_pos = () => {
+    Z = -5.1;
+
+    scene.remove.apply(scene, scene.children);
+    scene.remove.apply(scene2, scene2.children);
+    createParticleSystem(data);
+    createSlice();
+    drawSlicePlot(data, Z);
+}
 
 const controls = new THREE.OrbitControls( camera, renderer.domElement );
 controls.update();
 
+
 // Animate
 const animate = () =>
 {
+    // render the scenes
     renderer.render(scene, camera);
     renderer2.render(scene2, camera2);
 
     // Call animate for each frame
     window.requestAnimationFrame(animate);
-
 };
 
 animate();

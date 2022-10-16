@@ -14,12 +14,16 @@
 </head>
 
 <body>
-        <h1>CS 529 HW03: Flow Visualization with Three.js and D3.js</h1>
+        <h1>CS 529 HW03: Flow Visualization with Three.js</h1>
+        <p> To move the <B>dark grey</B> X-Y flow-split pane along the Z axis, plase use the 'a', 's', 'd', 'f' keys to move a little or a lot.</p>
+        <hr>
+        <button id="invert-colors" onclick="invertColor()">Invert Colors</button>
+        <button id="reset" onclick="reset_pos()">Reset Position</button>
         <div class="container">
-                <canvas class="flow-scene"></canvas>
-                <canvas class="flow-slice"></canvas>
+                <canvas id="flow-scene"></canvas>
+                <canvas id="flow-slice"></canvas>
         </div>
-        
+        <a href="credits.html">Credits</a>
         
         <script src="src/js/scene.js"></script>
         <script src="src/js/particleSystem.js"></script>
